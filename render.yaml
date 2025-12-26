@@ -7,9 +7,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app:app --host 0.0.0.0 --port 8000
 
-staticSites:
-  - name: pulse-ui
-    env: node
+  - type: static
+    name: pulse-ui
     plan: free
     rootDir: review-ui
     buildCommand: npm ci && npm run build
