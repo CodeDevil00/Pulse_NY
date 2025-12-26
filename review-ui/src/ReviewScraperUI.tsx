@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Download, Terminal, RefreshCw, Copy } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ReviewScraperUI = () => {
   const [commandInput, setCommandInput] = useState('');
   const [company, setCompany] = useState('');
@@ -16,93 +18,7 @@ const ReviewScraperUI = () => {
   const [reviewCount, setReviewCount] = useState(0);
   const [pulseData, setPulseData] = useState([]);
   const [showResults, setShowResults] = useState(false);
-
-  const sampleReviews = [
-  {
-    author: "Rahul Mehta",
-    date: "Oct 1, 2024",
-    title: "Smooth onboarding experience and responsive customer support",
-    rating: "positive"
-  },
-  {
-    author: "Ananya Sharma",
-    date: "Sep 28, 2024",
-    title: "The interface is clean but performance can be improved",
-    rating: "negative"
-  },
-  {
-    author: "Vikram Singh",
-    date: "Oct 1, 2024",
-    title: "Good features overall, especially the analytics dashboard",
-    rating: null
-  },
-  {
-    author: "Priya Nair",
-    date: "Oct 1, 2024",
-    title: "Had issues initially but the support team resolved them quickly",
-    rating: "positive"
-  },
-  {
-    author: "Arjun Patel",
-    date: null,
-    title: "Frequent loading delays make it difficult to use during peak hours",
-    rating: "negative"
-  },
-  {
-    author: "Sneha Kapoor",
-    date: null,
-    title: "Easy to use and well-designed, even for beginners",
-    rating: "positive"
-  },
-  {
-    author: "Rohit Verma",
-    date: "Oct 12, 2024",
-    title: "The pricing feels a bit high compared to similar platforms",
-    rating: "negative"
-  },
-  {
-    author: "Kavya Iyer",
-    date: "Oct 12, 2024",
-    title: "App works fine but lacks some advanced customization options",
-    rating: "negative"
-  },
-  {
-    author: "Aman Gupta",
-    date: "Oct 12, 2024",
-    title: "Reliable performance and consistent updates over time",
-    rating: null
-  },
-  {
-    author: "Neha Malhotra",
-    date: "Oct 12, 2024",
-    title: "Excellent user experience with minimal learning curve",
-    rating: "positive"
-  },
-  {
-    author: "Saurabh Kulkarni",
-    date: null,
-    title: "Customer service response time needs significant improvement",
-    rating: "negative"
-  },
-  {
-    author: "Pooja Choudhary",
-    date: null,
-    title: "Met my expectations for day-to-day usage",
-    rating: "negative"
-  },
-  {
-    author: "Aditya Rao",
-    date: null,
-    title: "Feature-rich platform that delivers consistent value",
-    rating: "positive"
-  },
-  {
-    author: "Ishita Banerjee",
-    date: "Oct 12, 2024",
-    title: "Very satisfied with the overall experience and reliability",
-    rating: "positive"
-  }
-];
+  const [sampleReviews, setSampleReviews] = useState([]);
 
 
   useEffect(() => {
@@ -128,9 +44,10 @@ const ReviewScraperUI = () => {
     }));
   };
 
-  const handleInitializeScrape = () => {
+  const handleInitializeScrape = async () => {
+    const selectedSources = Object.keys(sources).filter(key => sources[key]);
+
     if (!company && !startDate && !endDate) {
-      const selectedSources = Object.keys(sources).filter(key => sources[key]);
       if (selectedSources.length === 0) {
         addLog('Error: Please select at least one source', 'error');
         return;
@@ -142,52 +59,46 @@ const ReviewScraperUI = () => {
     setReviewCount(0);
     setShowResults(false);
     setPulseData([]);
+    setSampleReviews([]);
 
-    setTimeout(() => {
-      addLog('Connecting to G2 Gateway... Success.', 'success');
-      addLog('Bytes: 04', 'info');
-    }, 500);
+    try {
+      const res = await fetch(`${API_BASE_URL}/scrape`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company, start: startDate, end: endDate, source: selectedSources })
+      });
 
-    setTimeout(() => {
-      addLog('Navigating Sing page 2 of 7 10..', 'info');
-      addLog('Processing URLs: 846', 'info');
-    }, 1500);
+      if (!res.ok) {
+        throw new Error(`Scrape failed with status ${res.status}`);
+      }
 
-    setTimeout(() => {
-      addLog('Processing les 10 bas roaw nodes Parsing.', 'info');
-      addLog('Poor 300 BRs', 'info');
-    }, 2500);
+      const data = await res.json();
+      const normalizedLogs = Array.isArray(data.logs)
+        ? data.logs.map((log) => {
+            if (typeof log === 'string') {
+              return { message: log, type: 'info' };
+            }
+            return {
+              message: log.message ?? String(log),
+              type: log.type ?? 'info'
+            };
+          })
+        : [];
+      const normalizedReviews = Array.isArray(data.sampleReviews)
+        ? data.sampleReviews
+        : Array.isArray(data.sample_reviews)
+          ? data.sample_reviews
+          : [];
 
-    setTimeout(() => {
-      addLog('Processing 900 review nodes. Parsing.', 'info');
-      addLog('Fuxdsi $: 5qqrbh', 'info');
-    }, 3500);
-
-    setTimeout(() => {
-      addLog('Fouund 15 rmxizo $ los oart Page. Parsing..', 'info');
-      addLog('Ingpix $: 5qoobix kmasl.0b3dz $1823lb.', 'info');
-      addLog('Ingpld 10.1 Sizma 4 E.1B', 'info');
-      setReviewCount(452);
-    }, 4500);
-
-    setTimeout(() => {
-      addLog('Prl.', 'info');
-      addLog('Curaralassias is ionin for. $ aio" o$ £ iedon, lalal', 'info');
-      addLog('$ G-o-i-iriilbs $2°zl $88irs', 'info');
-      addLog('pari.3b..', 'info');
-    }, 5500);
-
-    setTimeout(() => {
-      addLog('0 sae solasy lata Imara.', 'info');
-      addLog('Moure rigs #Is $130 -an lor 19 Bo.', 'info');
-      setReviewCount(802);
-    }, 6500);
-
-    setTimeout(() => {
+      setLogs(normalizedLogs);
+      setReviewCount(data.reviewCount ?? data.review_count ?? normalizedReviews.length);
+      setSampleReviews(normalizedReviews);
       setShowResults(true);
+    } catch (error) {
+      addLog(error instanceof Error ? error.message : 'Failed to start scrape.', 'error');
+    } finally {
       setIsScrapingActive(false);
-      setReviewCount(1240);
-    }, 7500);
+    }
   };
 
   return (
