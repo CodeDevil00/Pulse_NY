@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Download, Terminal, RefreshCw, Copy } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = rawApiBaseUrl?.startsWith('http')
+  ? rawApiBaseUrl
+  : `https://${rawApiBaseUrl ?? ''}`;
 
 const ReviewScraperUI = () => {
   const [commandInput, setCommandInput] = useState('');
