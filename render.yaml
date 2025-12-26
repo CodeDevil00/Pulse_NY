@@ -19,4 +19,4 @@ services:
         fromService:
           type: web
           name: pulse-api
-          property: host
+          property: url
